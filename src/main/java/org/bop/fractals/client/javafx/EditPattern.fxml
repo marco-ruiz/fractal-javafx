@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="appPane" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bop.fractals.client.javafx.EditPatternController">
+   <top>
+      <Pane fx:id="controlPane" prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="782.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0" prefWidth="123.0" text="Generate Fractal" wrapText="true" />
+            <Button fx:id="modeBtn" layoutX="102.0" layoutY="21.0" mnemonicParsing="false" onAction="#switchMode" text="Show Fractal" />
+            <ColorPicker fx:id="colorPicker" editable="true" layoutX="217.0" layoutY="21.0" />
+            <Slider fx:id="recursions" blockIncrement="1.0" layoutX="477.0" layoutY="23.0" majorTickUnit="1.0" max="14.0" min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5.0" />
+            <Label layoutX="397.0" layoutY="26.0" text="Recursions:" />
+            <Button layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+         </children>
+      </Pane>
+   </top>
+   <center>
+      <Canvas fx:id="canvas" height="750.0" width="1000.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

@@ -1,0 +1,68 @@
+apply plugin: 'java'
+
+allprojects {
+	apply plugin: 'eclipse'
+/*
+	eclipse {
+		project {
+//			referencedProjects frameworkName
+			natures 'org.eclipse.buildship.core.gradleprojectnature'
+			buildCommand 'org.eclipse.buildship.core.gradleprojectbuilder'
+		}
+	}
+*/
+}
+
+subprojects {
+	eclipse.project.name = "${rootProject.name}.${project.name}".replaceAll(':', '-')
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+	compile project(':fractal-framework')
+    testCompile 'junit:junit:4.12'
+}
+
+task runApp(dependsOn: 'classes', type: JavaExec) {
+	group = 'Execution'
+	description = 'Launches the default application associated with this project'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+runApp.main = 'org.bop.fractals.client.javafx.Main'
+
+
+
+
+//==================
+// JavaFX SPECIFIC
+//==================
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+    }
+}
+
+apply plugin: 'javafx-gradle-plugin'
+
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = runApp.main
+
+    // minimal requirement for jfxNative-task
+    vendor = 'Marco Ruiz'
+}
+

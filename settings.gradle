@@ -1,0 +1,11 @@
+include ':fractal-framework'
+
+rootProject.name = 'fractal-javafx'
+
+rootProject.buildFileName = "${rootProject.name}.gradle"
+
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+    println project.buildFileName
+}
+
