@@ -1,0 +1,3 @@
+[submodule "fractal-framework"]
+	path = fractal-framework
+	url = ssh://git@github.com/marco-ruiz/fractal-framework.git
