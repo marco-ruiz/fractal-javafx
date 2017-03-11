@@ -17,9 +17,7 @@
 package org.bop.fractals.client.javafx;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bop.fractals.GeometricPatternFractalGenerator;
 import org.bop.fractals.line.FractalLine;
@@ -27,9 +25,8 @@ import org.bop.fractals.line.FractalLine;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -46,10 +43,14 @@ public class EditPatternController {
 
     @FXML private Pane appPane;
     @FXML private Pane controlPane;
-    @FXML private Button modeBtn;
-    @FXML private Slider recursions;
-    @FXML private ColorPicker colorPicker;
-    @FXML private Canvas canvas;
+
+	private ColorsControl colorsControl;
+
+	@FXML private Slider recursions;
+    @FXML private ToggleGroup colorGroup;
+
+    @FXML private Canvas patternCanvas;
+    @FXML private Canvas fractalCanvas;
 
 	private List<FractalLine> pattern = new ArrayList<>();
 	private Point[] editPoints = new Point[2];
@@ -57,25 +58,36 @@ public class EditPatternController {
     private GeometricPatternFractalGenerator<FractalLine> fractalGenerator;
 
     public void initialize() {
-    	colorPicker.setValue(Color.BLACK);
-    	canvas.setOnMousePressed(ev -> setPoint(ev, 0));
-    	canvas.setOnMouseDragged(ev -> setPoint(ev, 1));
-    	canvas.setOnMouseReleased(ev -> recordLine(ev));
+    	colorsControl = new ColorsControl(controlPane, 98, 21, 20,
+    			"Black", "Brown", "Gray", "Magenta", "Blue", "Cyan", "Green", "Yellow", "Orange", "Red");
+
+    	patternCanvas.setOnMousePressed(ev -> setPoint(ev, 0));
+    	patternCanvas.setOnMouseDragged(ev -> setPoint(ev, 1));
+    	patternCanvas.setOnMouseReleased(ev -> recordLine(ev));
     }
 
-    private void setPoint(MouseEvent event, int pointIndex) {
+	private void setPoint(MouseEvent event, int pointIndex) {
     	editPoints[pointIndex] = getPoint(event);
 
-    	GraphicsContext gc = canvas.getGraphicsContext2D();
-    	drawLines(pattern);
-    	if (pointIndex == 1)
-    		drawLine(gc, editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorPicker.getValue());
+    	GraphicsContext gc = patternCanvas.getGraphicsContext2D();
+    	drawLines(patternCanvas, pattern);
+    	if (pointIndex == 1) {
+    		drawLine(gc, editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorsControl.getSelected());
+//    		generateFractal();
+    	}
     }
 
-	private void drawLines(List<FractalLine> lines) {
-    	clearCanvas();
+    private void recordLine(MouseEvent event) {
+    	editPoints[1] = getPoint(event);
+    	pattern.add(new FractalLine(editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorsControl.getSelected()));
+    	drawLines(patternCanvas, pattern);
+		generateFractal();
+    }
+
+	private void drawLines(Canvas canvas, List<FractalLine> lines) {
+    	clearCanvas(canvas);
     	GraphicsContext gc = canvas.getGraphicsContext2D();
-		lines.stream().forEach(line -> drawLine(gc, line.Ax, line.Ay, line.Bx, line.By, line.rgbColorValue));
+		lines.stream().forEach(line -> drawLine(gc, line.Ax, line.Ay, line.Bx, line.By, line.color));
 	}
 
 	private void drawLine(GraphicsContext gc, float ax, float ay, float bx, float by, Object color) {
@@ -83,54 +95,28 @@ public class EditPatternController {
 		gc.strokeLine(ax, ay, bx, by);
 	}
 
-	private void clearCanvas() {
+	private void clearCanvas(Canvas canvas) {
 		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	}
-
-    private void recordLine(MouseEvent event) {
-    	editPoints[1] = getPoint(event);
-    	pattern.add(new FractalLine(editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorPicker.getValue()));
-    	drawLines(pattern);
-    }
 
 	public void reset() {
 		pattern.clear();
 		fractalGenerator = null;
-		switchMode(false);
+		clearCanvas(fractalCanvas);
+		clearCanvas(patternCanvas);
 	}
 
 	public void generateFractal() {
-		appPane.setDisable(true);
+		if (pattern.isEmpty()) return;
 		fractalGenerator = new GeometricPatternFractalGenerator<FractalLine>(pattern, (int)recursions.getValue()) {
 			protected void addFractalShape(FractalLine line) {
 				super.addFractalShape(line);
-				drawLine(canvas.getGraphicsContext2D(), line.Ax, line.Ay, line.Bx, line.By, line.rgbColorValue);
+				drawLine(fractalCanvas.getGraphicsContext2D(), line.Ax, line.Ay, line.Bx, line.By, line.color);
 			}
 		};
+		clearCanvas(fractalCanvas);
+		drawLines(fractalCanvas, pattern);
 		fractalGenerator.generateFractalSync();
-		switchMode(true);
-		appPane.setDisable(false);
-	}
-
-	public void switchMode() {
-		switchMode(!canvas.isDisabled());
-	}
-
-	private void switchMode(boolean toViewMode) {
-		canvas.setDisable(toViewMode);
-		modeBtn.setText(toViewMode ? "Edit Pattern" : "Show Fractal");
-
-		if (toViewMode && fractalGenerator == null) {
-			clearCanvas();
-			return;
-		}
-
-		List<FractalLine> output = new ArrayList<>();
-		output.addAll(pattern);
-		if (toViewMode)
-			output.addAll(fractalGenerator.getFractal());
-
-    	drawLines(output);
 	}
 }
 

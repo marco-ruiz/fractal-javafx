@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
@@ -10,16 +12,20 @@
    <top>
       <Pane fx:id="controlPane" prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="782.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0" prefWidth="123.0" text="Generate Fractal" wrapText="true" />
-            <Button fx:id="modeBtn" layoutX="102.0" layoutY="21.0" mnemonicParsing="false" onAction="#switchMode" text="Show Fractal" />
-            <ColorPicker fx:id="colorPicker" editable="true" layoutX="217.0" layoutY="21.0" />
-            <Slider fx:id="recursions" blockIncrement="1.0" layoutX="477.0" layoutY="23.0" majorTickUnit="1.0" max="14.0" min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5.0" />
-            <Label layoutX="397.0" layoutY="26.0" text="Recursions:" />
             <Button layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+            <Button layoutX="853.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0" prefWidth="123.0" text="Generate Fractal" wrapText="true" />
+            <Slider fx:id="recursions" blockIncrement="1.0" layoutX="550.0" layoutY="23.0" majorTickUnit="1.0" max="14.0" min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5.0" />
+            <Label layoutX="467.0" layoutY="26.0" text="Recursions:" />
          </children>
       </Pane>
    </top>
+   <left>
+      <Canvas fx:id="patternCanvas" height="750.0" width="500.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Canvas fx:id="fractalCanvas" height="750.0" width="500.0" BorderPane.alignment="CENTER" />
+   </right>
    <center>
-      <Canvas fx:id="canvas" height="750.0" width="1000.0" BorderPane.alignment="CENTER" />
+      <Separator orientation="VERTICAL" prefHeight="750.0" prefWidth="149.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>
