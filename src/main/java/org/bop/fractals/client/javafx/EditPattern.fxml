@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -8,24 +7,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="appPane" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bop.fractals.client.javafx.EditPatternController">
-   <top>
-      <Pane fx:id="controlPane" prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
-            <Button layoutX="853.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0" prefWidth="123.0" text="Generate Fractal" wrapText="true" />
-            <Slider fx:id="recursions" blockIncrement="1.0" layoutX="550.0" layoutY="23.0" majorTickUnit="1.0" max="14.0" min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5.0" />
-            <Label layoutX="467.0" layoutY="26.0" text="Recursions:" />
-         </children>
-      </Pane>
-   </top>
-   <left>
-      <Canvas fx:id="patternCanvas" height="750.0" width="500.0" BorderPane.alignment="CENTER" />
-   </left>
-   <right>
-      <Canvas fx:id="fractalCanvas" height="750.0" width="500.0" BorderPane.alignment="CENTER" />
-   </right>
-   <center>
-      <Separator orientation="VERTICAL" prefHeight="750.0" prefWidth="149.0" BorderPane.alignment="CENTER" />
-   </center>
-</BorderPane>
+<VBox fx:id="appPane" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="org.bop.fractals.client.javafx.EditPatternController">
+	<children>
+		<Pane fx:id="controlPane" maxHeight="75.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity"
+			prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+			<children>
+				<Button layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+				<Button layoutX="853.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0"
+					prefWidth="123.0" text="Generate Fractal" wrapText="true" />
+				<Slider fx:id="recursions" blockIncrement="1.0" layoutX="550.0" layoutY="23.0" majorTickUnit="1.0" max="14.0"
+					min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true"
+					snapToTicks="true" value="5.0" />
+				<Label layoutX="467.0" layoutY="26.0" text="Recursions:" />
+			</children>
+		</Pane>
+		<Separator halignment="LEFT" prefHeight="5.0" prefWidth="1000.0" valignment="BOTTOM" />
+		<HBox fx:id="drawPane" prefHeight="750.0" prefWidth="1000.0" VBox.vgrow="ALWAYS" />
+	</children>
+</VBox>
