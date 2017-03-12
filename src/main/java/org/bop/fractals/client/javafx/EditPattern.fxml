@@ -10,19 +10,22 @@
 <VBox fx:id="appPane" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="org.bop.fractals.client.javafx.EditPatternController">
 	<children>
-		<Pane fx:id="controlPane" maxHeight="75.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity"
-			prefHeight="75.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+		<Pane fx:id="controlPane" maxHeight="150.0" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity"
+			prefHeight="150.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
 			<children>
 				<Button layoutX="32.0" layoutY="21.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
-				<Button layoutX="853.0" layoutY="21.0" mnemonicParsing="false" onAction="#generateFractal" prefHeight="27.0"
-					prefWidth="123.0" text="Generate Fractal" wrapText="true" />
 				<Slider fx:id="recursions" blockIncrement="1.0" layoutX="550.0" layoutY="23.0" majorTickUnit="1.0" max="14.0"
 					min="2.0" minorTickCount="0" prefHeight="38.0" prefWidth="281.0" showTickLabels="true" showTickMarks="true"
 					snapToTicks="true" value="5.0" />
 				<Label layoutX="467.0" layoutY="26.0" text="Recursions:" />
+				<Slider fx:id="cellSizeSlider" layoutX="550.0" layoutY="68.0" majorTickUnit="5.0" max="60.0" min="20.0"
+					minorTickCount="0" prefHeight="15.0" prefWidth="281.0" snapToTicks="true" />
+				<Label layoutX="467.0" layoutY="68.0" text="Grid Cell:" />
+				<CheckBox fx:id="gridEnabled" layoutX="853.0" layoutY="66.0" mnemonicParsing="false" onAction="#resetGrid"
+					text="Grid Enabled" />
 			</children>
 		</Pane>
 		<Separator halignment="LEFT" prefHeight="5.0" prefWidth="1000.0" valignment="BOTTOM" />
-		<HBox fx:id="drawPane" prefHeight="750.0" prefWidth="1000.0" VBox.vgrow="ALWAYS" />
+		<SplitPane fx:id="drawPane" prefHeight="750.0" prefWidth="1000.0" VBox.vgrow="ALWAYS" />
 	</children>
 </VBox>
