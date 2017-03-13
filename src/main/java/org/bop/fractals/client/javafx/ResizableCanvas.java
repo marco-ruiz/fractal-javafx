@@ -24,6 +24,7 @@ import org.bop.fractals.line.FractalLine;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.SplitPane;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -39,6 +40,8 @@ public class ResizableCanvas extends Canvas {
 	private Pane parent;
 	private int gridCellSide = 0;
 
+	private Scroller scroller = new Scroller();
+
 	public ResizableCanvas(SplitPane grandParent, double width, double height, Runnable onResizeListener) {
 		super(width, height);
 		onResize = onResizeListener;
@@ -49,6 +52,8 @@ public class ResizableCanvas extends Canvas {
 
 		grandParent.getItems().add(parent);
 		drawGrid();
+
+//		setOnScroll(scroller::scroll);
 	}
 
 	@Override
@@ -90,8 +95,9 @@ public class ResizableCanvas extends Canvas {
 		drawGrid();
 	}
 
+
 	//=================
-	// DRAWING HELPERS
+	// CLEAR CANVAS
 	//=================
 	public GraphicsContext clearCanvas() {
 		GraphicsContext gc = getGraphicsContext2D();
@@ -100,6 +106,9 @@ public class ResizableCanvas extends Canvas {
 		return gc;
 	}
 
+	//=================
+	// DRAWING GRID
+	//=================
 	public void drawGrid() {
 		if (gridCellSide == 0) return;
 		GraphicsContext gc = this.getGraphicsContext2D();
@@ -107,29 +116,84 @@ public class ResizableCanvas extends Canvas {
 		gc.setLineDashes(2, 5);
 		gc.setLineWidth(0.25);
 
-		IntStream.rangeClosed(0, (int) getWidth() / gridCellSide)
-				.map(index -> index * gridCellSide)
-		        .forEach(x -> drawLine(gc, x, 0, x, (float) getHeight(), Color.BLACK));
-
-		IntStream.rangeClosed(0, (int) getHeight() / gridCellSide)
-				.map(index -> index * gridCellSide)
-		        .forEach(y -> drawLine(gc, 0, y, (float) getWidth(), y, Color.BLACK));
+		getGridStream(getWidth()).forEach(x -> drawLine(gc, x, 0, x, (float) getHeight(), Color.BLACK));
+		getGridStream(getHeight()).forEach(y -> drawLine(gc, 0, y, (float) getWidth(), y, Color.BLACK));
 
 		gc.setLineWidth(1);
 		gc.setLineDashes();
 	}
 
-	public void drawLines(List<FractalLine> lines) {
-    	GraphicsContext gc = clearCanvas();
-		lines.stream().forEach(line -> drawLine(gc, line.Ax, line.Ay, line.Bx, line.By, line.color));
+	private IntStream getGridStream(double dimSize) {
+		return IntStream.rangeClosed(0, (int) dimSize / gridCellSide).map(index -> index * gridCellSide);
 	}
 
-	public void drawLine(float ax, float ay, float bx, float by, Object color) {
+	//================
+	// DRAWING LINES
+	//================
+	public void drawLines(List<FractalLine> lines) {
+    	GraphicsContext gc = clearCanvas();
+		lines.stream().forEach(line -> drawLine(gc, line));
+	}
+
+	public void drawLine(FractalLine line) {
+		drawLine(getGraphicsContext2D(), line);
+	}
+
+	public void drawLine(GraphicsContext gc, FractalLine line) {
+		drawLine(gc,
+					scroller.translate(line.Ax, 0),
+					scroller.translate(line.Ay, 1),
+					scroller.translate(line.Bx, 0),
+					scroller.translate(line.By, 1),
+					line.color);
+	}
+
+	public void drawLine(double ax, double ay, double bx, double by, Object color) {
     	drawLine(getGraphicsContext2D(), ax, ay, bx, by, color);
 	}
 
-	private void drawLine(GraphicsContext gc, float ax, float ay, float bx, float by, Object color) {
+	private void drawLine(GraphicsContext gc, double ax, double ay, double bx, double by, Object color) {
 		gc.setStroke((Color) color);
 		gc.strokeLine(ax, ay, bx, by);
 	}
+
+	//==============
+	// ZOOM HELPER
+	//==============
+	class Scroller {
+		private double scroll = 0;
+
+		// computed
+		private double offset[] = {0, 0};
+		private double zoom = 1;
+
+		public void scroll(ScrollEvent event) {
+			scroll += event.getDeltaY();
+
+			offset[0] = translate(event.getX(), 0);
+			offset[1] = translate(event.getY(), 1);
+
+			zoom = computeZoom(scroll);
+			offset[0] = offset[0] - (offset[0] * zoom);
+			offset[1] = offset[1] - (offset[1] * zoom);
+
+			redraw();
+		}
+
+		/**
+		 * Returns the canvas coordinate corresponding to 'value'
+		 *
+		 * @param value
+		 * @param translateIndex
+		 * @return
+		 */
+		private double translate(double value, int translateIndex) {
+			return value * zoom + offset[translateIndex];
+		}
+
+		private double computeZoom(double value) {
+	    	return (value > 0) ? value + 1 : 1 / (1 - value);
+		}
+	}
 }
+
