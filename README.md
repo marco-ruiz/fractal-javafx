@@ -1,4 +1,4 @@
-# Java Swing Fractal Application
+# JavaFX Fractal Application
 
 ![](README/fractal-javafx.gif)
 
