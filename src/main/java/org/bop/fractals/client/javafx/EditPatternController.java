@@ -56,6 +56,7 @@ public class EditPatternController {
     	colorsControl = new ColorsControl(controlPane, 98, 21, 20,
     			"Black", "Brown", "Gray", "Magenta", "Blue", "Cyan", "Green", "Yellow", "Orange", "Red");
 
+    	recursions.valueProperty().addListener(ev -> generateFractal());
     	cellSizeSlider.valueProperty().addListener(ev -> resetGrid());
 
     	// Canvases to draw the pattern and the fractal
@@ -73,7 +74,7 @@ public class EditPatternController {
 
     	patternCanvas.drawLines(pattern);
     	if (pointIndex == 1)
-    		patternCanvas.drawLine(editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorsControl.getSelected());
+    		patternCanvas.drawLine(new FractalLine(editPoints[0].x, editPoints[0].y, editPoints[1].x, editPoints[1].y, colorsControl.getSelected()));
     }
 
     private void recordLine(MouseEvent event) {
@@ -100,36 +101,12 @@ public class EditPatternController {
 		fractalGenerator = new GeometricPatternFractalGenerator<FractalLine>(pattern, (int)recursions.getValue()) {
 			protected void addFractalShape(FractalLine line) {
 				super.addFractalShape(line);
-				fractalCanvas.drawLine(line.Ax, line.Ay, line.Bx, line.By, line.color);
+				fractalCanvas.drawLine(line);
 			}
 		};
 		fractalCanvas.clearCanvas();
 		fractalCanvas.drawLines(pattern);
 		fractalGenerator.generateFractalSync();
-	}
-
-	//====================
-	// POINT HELPER CLASS
-	//====================
-	class Point {
-		final float x, y;
-
-		public Point(MouseEvent event) {
-			this((float)event.getX(), (float)event.getY(), 0);
-		}
-
-		public Point(MouseEvent event, int cellSide) {
-			this((float)event.getX(), (float)event.getY(), cellSide);
-		}
-
-		public Point(float x, float y, int cellSide) {
-			this.x = getClosest(x, cellSide);
-			this.y = getClosest(y, cellSide);
-		}
-
-		private float getClosest(float coord, int cellSide) {
-			return (cellSide == 0) ? coord : Math.round(coord / cellSide) * cellSide;
-		}
 	}
 }
 
