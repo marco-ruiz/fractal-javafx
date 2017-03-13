@@ -22,9 +22,9 @@ local.properties
 .DS_Store
 
 # Eclipse project files
-.settings/
-.classpath
-.project
+#.settings/
+#.classpath
+#.project
 
 # Android Studio
 *.iml
@@ -35,3 +35,4 @@ local.properties
 #NDK
 obj/
 
+/todo.txt
